@@ -12,6 +12,7 @@ import {
 } from "../ui/sheet";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Menu } from "lucide-react";
 
 const PublicNavbar = () => {
   const navItems = [
@@ -22,70 +23,72 @@ const PublicNavbar = () => {
     { label: "NGOs", href: "/ngos" },
   ];
   return (
-    <header className="sticky top-0 z-50 flex h-10 border w-full items-center justify-around bg-background/05 px-4 shadow-md">
-      <div>
-        <div>
-          <Link
-            href="/"
-            className="flex items-center justify-center text-xl font-bold text-primary"
-          >
-            Health-Care
-          </Link>
-        </div>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md dark:bg-background/95">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        {/* Left: Logo */}
+        <Link
+          href="/"
+          className="flex items-center justify-center text-xl font-bold text-primary"
+        >
+          Health-Care
+        </Link>
 
-        <nav className="hidden md:block ">
-          <ul className="flex gap-6">
-            {navItems.map((item) => (
-              <li
-                key={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary"
-              >
-                <Link href={item.href}>{item.label}</Link>
-              </li>
-            ))}
-          </ul>
+        {/* Center: Nav Items (Desktop) */}
+        <nav className="hidden md:flex items-center space-x-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
+        {/* Right: Login Button (Desktop) */}
         <div className="hidden md:block">
           <Link href="/login">
             <Button>Login</Button>
           </Link>
         </div>
-      </div>
 
-      {/* mobile navigation */}
+        {/* Mobile Navigation */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="p-6">
+              <SheetHeader>
+                <SheetTitle className="text-lg font-semibold">
+                  Navigation
+                </SheetTitle>
+              </SheetHeader>
 
-      <div className="md:hidden">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline">Open</Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
-              <SheetDescription>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="grid flex-1 auto-rows-min gap-6 px-4">
-              <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-name">Name</Label>
-                <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+              <nav className="mt-6 space-y-4">
+                {navItems.map((item) => (
+                  <SheetClose asChild key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="block text-base font-medium text-muted-foreground hover:text-primary"
+                    >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                ))}
+              </nav>
+
+              <div className="mt-6">
+                <Link href="/login">
+                  <Button className="w-full">Login</Button>
+                </Link>
               </div>
-              <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-username">Username</Label>
-                <Input id="sheet-demo-username" defaultValue="@peduarte" />
-              </div>
-            </div>
-            <SheetFooter>
-              <Button type="submit">Save changes</Button>
-              <SheetClose asChild>
-                <Button variant="outline">Close</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
