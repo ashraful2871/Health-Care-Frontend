@@ -4,14 +4,10 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { Menu } from "lucide-react";
 
 const PublicNavbar = () => {
