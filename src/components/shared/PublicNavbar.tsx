@@ -48,9 +48,9 @@ const PublicNavbar = () => {
 
         {/* Right: Login Button (Desktop) */}
         <div className="hidden md:block">
-          <Link href="/login">
-            <Button>Login</Button>
-          </Link>
+          <Button>
+            <Link href="/login">Login</Link>
+          </Button>
         </div>
 
         {/* Mobile Navigation */}
