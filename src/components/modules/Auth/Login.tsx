@@ -18,12 +18,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { checkAuth } from "@/utility/auth";
 import loginUser from "@/utility/loginUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -57,7 +58,7 @@ const Login = () => {
     try {
       const res = await loginUser(data.email, data.password);
       if (res.success) {
-        router.push("/dashboard");
+        const authenticated = await checkAuth();
       } else {
         throw new Error(res.message || "Login failed");
       }
