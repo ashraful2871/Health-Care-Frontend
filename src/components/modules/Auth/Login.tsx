@@ -59,6 +59,26 @@ const Login = () => {
       const res = await loginUser(data.email, data.password);
       if (res.success) {
         const authenticated = await checkAuth();
+
+        if (authenticated.isAuthenticated) {
+          const { role } = authenticated.user;
+          switch (role) {
+            case "ADMIN":
+              router.push("/dashboard");
+              break;
+            case "DOCTOR":
+              router.push("/dashboard/doctor");
+              break;
+            case "PATIENT":
+              router.push("/dashboard/patient");
+              break;
+            default:
+              router.push("/");
+              break;
+          }
+        } else {
+          setError("Authentication check failed after login.");
+        }
       } else {
         throw new Error(res.message || "Login failed");
       }
