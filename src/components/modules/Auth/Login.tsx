@@ -64,7 +64,7 @@ const Login = () => {
           const { role } = authenticated.user;
           switch (role) {
             case "ADMIN":
-              router.push("/dashboard");
+              router.push("/dashboard/admin");
               break;
             case "DOCTOR":
               router.push("/dashboard/doctor");

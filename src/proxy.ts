@@ -1,29 +1,50 @@
+import next from "next";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { jwtDecode } from "jwt-decode";
 
-// This function can be marked `async` if using `await` inside
-export function proxy(request: NextRequest) {
-  const token = request.cookies.get("accessToken")?.value;
-  console.log(token);
+interface UserInterface {
+  id: string;
+  email: string;
+  role: "ADMIN" | "PATIENT" | "DOCTOR";
+  exp: number;
+  lat: number;
+}
+
+const roleBasedRoutes = {
+  ADMIN: ["/admin/dashboard"],
+  DOCTOR: ["/doctor/dashboard"],
+  PATIENT: [
+    "/patient/dashboard",
+    "/patient/appointments",
+    "/patient/medical-records",
+  ],
+};
+
+const authRoutes = ["/login", "/register", "/forgot-password"];
+export async function proxy(request: NextRequest) {
+  const accessToken = request.cookies.get("accessToken")?.value;
+  const refreshToken = request.cookies.get("refreshToken")?.value;
   const { pathname } = request.nextUrl;
 
-  const protectedPaths = ["/about", "/dashboard", "/profile", "/appointments"];
-
-  const authRoutes = ["/login", "/register", "/forgot-password"];
-
-  const isProtectedPath = protectedPaths.some((path) =>
-    pathname.startsWith(path)
-  );
-
-  const isAuthRoute = authRoutes.some((route) => pathname === route);
-  console.log(isAuthRoute);
-  if (isProtectedPath && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (!accessToken && !refreshToken && !authRoutes.includes(pathname)) {
+    return NextResponse.redirect(
+      new URL(`/login?redirect=${pathname}`, request.url)
+    );
+  }
+  let user: UserInterface | null = null;
+  if (accessToken) {
+    try {
+      user = jwtDecode(accessToken);
+      console.log(user);
+    } catch (error) {
+      console.log(error);
+      return NextResponse.redirect(
+        new URL(`/login?redirect=${pathname}`, request.url)
+      );
+    }
   }
 
-  if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
   return NextResponse.next();
 }
 
