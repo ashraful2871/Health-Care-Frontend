@@ -3,7 +3,8 @@
 "use server";
 
 import z from "zod";
-
+import { parse } from "cookie";
+import { cookies } from "next/headers";
 const loginInvalidZodSchema = z.object({
   email: z.email(),
   password: z
@@ -18,6 +19,9 @@ const loginInvalidZodSchema = z.object({
 
 export const loginUser = async (_currentState: any, formData: any) => {
   try {
+    let accessTokenObject: null | any = null;
+    let refreshTokenObject: null | any = null;
+
     const loginData = {
       email: formData.get("email"),
       password: formData.get("password"),
@@ -35,14 +39,60 @@ export const loginUser = async (_currentState: any, formData: any) => {
         }),
       };
     }
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
       method: "POST",
       body: JSON.stringify(loginData),
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((res) => res.json());
-    return res;
+    });
+
+    const result = await res.json();
+
+    const setCookieHeaders = res.headers.getSetCookie();
+
+    if (setCookieHeaders && setCookieHeaders.length > 0) {
+      setCookieHeaders.forEach((cookie: string) => {
+        console.log(cookie, "cookie");
+
+        const parsedCookie = parse(cookie);
+        console.log(parsedCookie, "parsedCookie");
+        if (parsedCookie["accessToken"]) {
+          accessTokenObject = parsedCookie;
+        }
+        if (parsedCookie["refreshToken"]) {
+          refreshTokenObject = parsedCookie;
+        }
+      });
+    } else {
+      throw new Error("No Set-Cookie header found in the response");
+    }
+
+    if (!accessTokenObject) {
+      throw new Error("No access token found");
+    }
+    if (!refreshTokenObject) {
+      throw new Error("No refresh token found");
+    }
+
+    const cookieStore = await cookies();
+
+    cookieStore.set("accessToken", accessTokenObject.accessToken, {
+      secure: true,
+      httpOnly: true,
+      maxAge: parseInt(accessTokenObject.maxAge),
+      path: accessTokenObject.path || "/",
+    });
+
+    cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {
+      secure: true,
+      httpOnly: true,
+      maxAge: parseInt(refreshTokenObject.maxAge),
+      path: refreshTokenObject.path || "/",
+    });
+
+    return result;
   } catch (error) {
     console.log(error);
     return { error: "Login Failed" };
