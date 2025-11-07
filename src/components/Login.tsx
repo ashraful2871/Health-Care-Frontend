@@ -8,6 +8,16 @@ import { Input } from "./ui/input";
 
 const Login = () => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
+
+  const getFieldError = (fieldName: string) => {
+    if (state && state.errors) {
+      const error = state.errors.find((err: any) => err.field === fieldName);
+      return error.message;
+    } else {
+      return null;
+    }
+  };
+
   console.log(state, "state");
   return (
     <form action={formAction}>
@@ -23,6 +33,11 @@ const Login = () => {
               placeholder="m@example.com"
               //   required
             />
+            {getFieldError("email") && (
+              <FieldDescription className="text-red-600">
+                {getFieldError("email")}
+              </FieldDescription>
+            )}
           </Field>
 
           {/* Password */}
@@ -35,6 +50,11 @@ const Login = () => {
               placeholder="Enter your password"
               //   required
             />
+            {getFieldError("password") && (
+              <FieldDescription className="text-red-600">
+                {getFieldError("password")}
+              </FieldDescription>
+            )}
           </Field>
         </div>
         <FieldGroup className="mt-4">
