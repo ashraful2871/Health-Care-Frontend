@@ -2,7 +2,7 @@
 
 "use server";
 
-import z, { email, success } from "zod";
+import z from "zod";
 
 const loginInvalidZodSchema = z.object({
   email: z.email(),
