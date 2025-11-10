@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import {
@@ -11,9 +10,11 @@ import {
 } from "../ui/sheet";
 import { Menu } from "lucide-react";
 import { checkAuth } from "@/utility/auth";
+import { getCookie } from "@/service/auth/cookiesHandler";
+import LogoutButton from "./LogoutButton";
 
 const { user } = await checkAuth();
-const PublicNavbar = () => {
+const PublicNavbar = async () => {
   const { role } = user || { role: "guest" };
   console.log(user);
   const navItems = [
@@ -26,6 +27,8 @@ const PublicNavbar = () => {
   if (role === "ADMIN") {
     navItems.push({ label: "Admin Dashboard", href: "/dashboard/admin" });
   }
+
+  const accessToken = await getCookie("accessToken");
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md dark:bg-background/95">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -52,10 +55,8 @@ const PublicNavbar = () => {
 
         {/* Right: Login Button (Desktop) */}
         <div className="hidden md:block">
-          {role !== "guest" ? (
-            <Button variant="destructive">
-              <Link href="/logout">Logout</Link>
-            </Button>
+          {accessToken ? (
+            <LogoutButton></LogoutButton>
           ) : (
             <Button>
               <Link href="/login">Login</Link>
