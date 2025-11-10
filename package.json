@@ -28,6 +28,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-table": "^8.21.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",

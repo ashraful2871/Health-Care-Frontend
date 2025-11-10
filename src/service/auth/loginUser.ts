@@ -5,6 +5,14 @@
 import z from "zod";
 import { parse } from "cookie";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import {
+  getDefaultDashboardRoute,
+  isValidRedirectForRole,
+  UserRole,
+} from "@/lib/auth-utils";
+
 const loginInvalidZodSchema = z.object({
   email: z.email(),
   password: z
@@ -19,6 +27,8 @@ const loginInvalidZodSchema = z.object({
 
 export const loginUser = async (_currentState: any, formData: any) => {
   try {
+    const redirectTo = formData.get("redirect");
+    console.log("redirect from login form", redirectTo);
     let accessTokenObject: null | any = null;
     let refreshTokenObject: null | any = null;
 
@@ -94,9 +104,29 @@ export const loginUser = async (_currentState: any, formData: any) => {
       path: refreshTokenObject.path || "/",
       sameSite: refreshTokenObject.sameSite || "none",
     });
+    const verifyToken: JwtPayload | string = jwt.verify(
+      accessTokenObject.accessToken,
+      process.env.JWT_SECRET as string
+    );
 
-    return result;
-  } catch (error) {
+    if (typeof verifyToken === "string") {
+      throw new Error("Invalid access token");
+    }
+
+    const userRole: UserRole = verifyToken.role;
+
+    if (redirectTo) {
+      const requestedPath = redirectTo.toString();
+      if (isValidRedirectForRole(requestedPath, userRole)) {
+        redirect(requestedPath);
+      } else {
+        redirect(getDefaultDashboardRoute(userRole));
+      }
+    }
+  } catch (error: any) {
+    if (error?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
     console.log(error);
     return { error: "Login Failed" };
   }

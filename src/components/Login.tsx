@@ -6,13 +6,13 @@ import { useActionState } from "react";
 import { loginUser } from "@/service/auth/loginUser";
 import { Input } from "./ui/input";
 
-const Login = () => {
+const Login = ({ redirect }: { redirect?: string }) => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
 
   const getFieldError = (fieldName: string) => {
     if (state && state.errors) {
       const error = state.errors.find((err: any) => err.field === fieldName);
-      return error.message;
+      return error?.message;
     } else {
       return null;
     }
@@ -22,6 +22,7 @@ const Login = () => {
   return (
     <form action={formAction}>
       <FieldGroup>
+        {redirect && <input type="hidden" name="redirect" value={redirect} />}
         <div className="grid grid-cols-1 gap-4">
           {/* Email */}
           <Field>
