@@ -59,7 +59,6 @@ export const loginUser = async (_currentState: any, formData: any) => {
     });
 
     const result = await res.json();
-
     const setCookieHeaders = res.headers.getSetCookie();
 
     if (setCookieHeaders && setCookieHeaders.length > 0) {
@@ -114,6 +113,9 @@ export const loginUser = async (_currentState: any, formData: any) => {
     }
 
     const userRole: UserRole = verifyToken.role;
+    if (!result) {
+      throw new Error("Login failed");
+    }
 
     if (redirectTo) {
       const requestedPath = redirectTo.toString();
@@ -122,6 +124,8 @@ export const loginUser = async (_currentState: any, formData: any) => {
       } else {
         redirect(getDefaultDashboardRoute(userRole));
       }
+    } else {
+      redirect(getDefaultDashboardRoute(userRole));
     }
   } catch (error: any) {
     if (error?.digest?.startsWith("NEXT_REDIRECT")) {
