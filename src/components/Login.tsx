@@ -2,9 +2,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "./ui/field";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { loginUser } from "@/service/auth/loginUser";
 import { Input } from "./ui/input";
+import { toast } from "sonner";
 
 const Login = ({ redirect }: { redirect?: string }) => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
@@ -19,6 +20,12 @@ const Login = ({ redirect }: { redirect?: string }) => {
   };
 
   console.log(state, "state");
+
+  useEffect(() => {
+    if (state && !state.success && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
   return (
     <form action={formAction}>
       <FieldGroup>

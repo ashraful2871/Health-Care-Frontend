@@ -4,7 +4,6 @@
 
 import z from "zod";
 import { parse } from "cookie";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import {
@@ -112,8 +111,8 @@ export const loginUser = async (_currentState: any, formData: any) => {
     }
 
     const userRole: UserRole = verifyToken.role;
-    if (!result) {
-      throw new Error("Login failed");
+    if (!result.success) {
+      throw new Error(result.message || "Login failed");
     }
 
     if (redirectTo) {
@@ -121,16 +120,23 @@ export const loginUser = async (_currentState: any, formData: any) => {
       if (isValidRedirectForRole(requestedPath, userRole)) {
         redirect(requestedPath);
       } else {
-        redirect(getDefaultDashboardRoute(userRole));
+        redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
       }
     } else {
-      redirect(getDefaultDashboardRoute(userRole));
+      redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
     }
   } catch (error: any) {
     if (error?.digest?.startsWith("NEXT_REDIRECT")) {
       throw error;
     }
     console.log(error);
-    return { error: "Login Failed" };
+    return {
+      success: false,
+      message: `${
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Login Failed. You might have entered incorrect email or password."
+      }`,
+    };
   }
 };
