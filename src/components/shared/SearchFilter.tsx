@@ -1,3 +1,5 @@
+"use client";
+
 import { Search } from "lucide-react";
 import React, { useEffect, useState, useTransition } from "react";
 import { Input } from "../ui/input";
