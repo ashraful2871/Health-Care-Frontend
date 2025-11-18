@@ -66,12 +66,9 @@ export const registerPatient = async (
       newFormData.append("file", formData.get("file") as Blob);
     }
 
-    const res = await serverFetch.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/create-patient`,
-      {
-        body: newFormData,
-      }
-    );
+    const res = await serverFetch.post(`/user/create-patient`, {
+      body: newFormData,
+    });
     const result = await res.json();
 
     if (result.success) {
