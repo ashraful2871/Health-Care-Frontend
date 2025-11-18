@@ -12,6 +12,8 @@ import {
   UserRole,
 } from "@/lib/auth-utils";
 import { setCookie } from "./cookiesHandler";
+import { serverFetch } from "@/lib/server-fetch";
+import { zodValidator } from "@/lib/zodValidator";
 
 const loginInvalidZodSchema = z.object({
   email: z.email(),
@@ -32,30 +34,32 @@ export const loginUser = async (_currentState: any, formData: any) => {
     let accessTokenObject: null | any = null;
     let refreshTokenObject: null | any = null;
 
-    const loginData = {
+    const payload = {
       email: formData.get("email"),
       password: formData.get("password"),
     };
 
-    const validatedFields = loginInvalidZodSchema.safeParse(loginData);
-    if (!validatedFields.success) {
-      return {
-        success: false,
-        errors: validatedFields.error.issues.map((issue) => {
-          return {
-            field: issue.path[0],
-            message: issue.message,
-          };
-        }),
-      };
-    }
+    // const validatedFields = loginInvalidZodSchema.safeParse(loginData);
+    // if (!validatedFields.success) {
+    //   return {
+    //     success: false,
+    //     errors: validatedFields.error.issues.map((issue) => {
+    //       return {
+    //         field: issue.path[0],
+    //         message: issue.message,
+    //       };
+    //     }),
+    //   };
+    // }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-      method: "POST",
-      body: JSON.stringify(loginData),
-      headers: {
-        "Content-Type": "application/json",
-      },
+    if (zodValidator(payload, loginInvalidZodSchema).success === false) {
+      return zodValidator(payload, loginInvalidZodSchema);
+    }
+    const validatedPayload = zodValidator(payload, loginInvalidZodSchema).data;
+
+    const res = await serverFetch.post(`/auth/login`, {
+      body: JSON.stringify(validatedPayload),
+      headers: { "Content-Type": "application/json" },
     });
 
     const result = await res.json();
