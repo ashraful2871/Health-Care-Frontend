@@ -1,5 +1,5 @@
 import LogoutButton from "@/components/shared/LogoutButton";
-import { UserInfo } from "@/components/types/user.interface";
+import { UserInfo } from "@/types/user.interface";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

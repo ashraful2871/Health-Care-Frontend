@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { UserInfo } from "@/components/types/user.interface";
+import { UserInfo } from "@/types/user.interface";
 import { getCookie } from "./cookiesHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 

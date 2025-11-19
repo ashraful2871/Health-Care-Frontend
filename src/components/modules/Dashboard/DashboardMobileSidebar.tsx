@@ -1,5 +1,5 @@
-import { NavSection } from "@/components/types/dashboard.interface";
-import { UserInfo } from "@/components/types/user.interface";
+import { NavSection } from "@/types/dashboard.interface";
+import { UserInfo } from "@/types/user.interface";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";

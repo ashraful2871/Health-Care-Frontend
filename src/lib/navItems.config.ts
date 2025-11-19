@@ -1,4 +1,4 @@
-import { NavSection } from "@/components/types/dashboard.interface";
+import { NavSection } from "@/types/dashboard.interface";
 import { getDefaultDashboardRoute, UserRole } from "./auth-utils";
 
 const getCommonNavItems = (role: UserRole): NavSection[] => {

@@ -2,11 +2,7 @@
 "use server";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zodValidator";
-import z from "zod";
-
-export const createSpecialityZodSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters long"),
-});
+import { createSpecialityZodSchema } from "@/zod/specialities.validation";
 
 export async function createSpeciality(
   _previousState: any,
@@ -29,8 +25,8 @@ export async function createSpeciality(
     const newFormData = new FormData();
     newFormData.append("data", JSON.stringify(validatedPayload));
 
-    if (formData.get("title")) {
-      newFormData.append("title", formData.get("title") as string);
+    if (formData.get("file")) {
+      newFormData.append("file", formData.get("file") as Blob);
     }
 
     const response = await serverFetch.post("/specialties", {

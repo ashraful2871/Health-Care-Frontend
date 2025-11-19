@@ -1,5 +1,5 @@
 import { LargeSparkleIcon, SparkleIcon } from "@/assets/icon/SparkleIcon";
-import { HeroProps } from "@/components/types/HeroProps";
+import { HeroProps } from "@/types/HeroProps";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

@@ -1,5 +1,5 @@
-import { NavSection } from "@/components/types/dashboard.interface";
-import { UserInfo } from "@/components/types/user.interface";
+import { NavSection } from "@/types/dashboard.interface";
+import { UserInfo } from "@/types/user.interface";
 import { getDefaultDashboardRoute } from "@/lib/auth-utils";
 import { getUserInfo } from "@/service/auth/getUserInfo";
 import React from "react";

@@ -10,7 +10,7 @@ import {
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { createSpeciality } from "@/service/admin/specialitiesManagement";
-import React, { useEffect, useTransition } from "react";
+import React, { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 
 interface ISpecialitiesFormDialogProps {
@@ -24,7 +24,7 @@ const SpecialitiesFormDialog = ({
   onClose,
   onSuccess,
 }: ISpecialitiesFormDialogProps) => {
-  const [state, formAction, pending] = useTransition(createSpeciality, null);
+  const [state, formAction, pending] = useActionState(createSpeciality, null);
   useEffect(() => {
     if (state && state?.success) {
       toast.success(state.message);

@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bell, Menu, Search } from "lucide-react";
 import UserDropdown from "./UserDropdown";
-import { UserInfo } from "@/components/types/user.interface";
+import { UserInfo } from "@/types/user.interface";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import DashboardMobileSidebar from "./DashboardMobileSidebar";
-import { NavSection } from "@/components/types/dashboard.interface";
+import { NavSection } from "@/types/dashboard.interface";
 import { useEffect, useState } from "react";
 
 interface DashboardNavbarContentProps {

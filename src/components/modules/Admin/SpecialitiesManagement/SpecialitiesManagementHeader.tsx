@@ -10,13 +10,17 @@ const SpecialitiesManagementHeader = () => {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const handleSuccess = () => {
+    startTransition(() => {
+      router.refresh();
+    });
+  };
   return (
     <>
       <SpecialitiesFormDialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        onSuccess={() => {}}
+        onSuccess={handleSuccess}
       />
 
       <ManagementPageHeader
