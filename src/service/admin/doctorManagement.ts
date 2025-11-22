@@ -132,7 +132,7 @@ export async function updateDoctor(
     if (!validatePayload) {
       throw new Error("invalid payload");
     }
-    const response = await serverFetch.patch(`/doctors/${id}`, {
+    const response = await serverFetch.patch(`/doctor/${id}`, {
       headers: {
         "Content-Type": "application/json",
       },
