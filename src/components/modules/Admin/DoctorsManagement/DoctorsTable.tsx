@@ -1,6 +1,6 @@
 "use client";
 import ManagementTable from "@/components/shared/ManagementTable";
-import { deleteDoctor, softDelete } from "@/service/admin/doctorManagement";
+import { softDelete } from "@/service/admin/doctorManagement";
 import { IDoctor } from "@/types/doctor.interface";
 import { ISpecialty } from "@/types/specialities.interface.ts";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { doctorsColumns } from "./DoctorsColumns";
 import DoctorFormDialog from "./DoctorFormDialog";
 import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationDialog";
+import DoctorViewDetailDialog from "./DoctorViewDetailDialog";
 
 interface DoctorsTableProps {
   doctors: IDoctor[];
@@ -45,7 +46,7 @@ const DoctorsTable = ({ doctors, specialities }: DoctorsTableProps) => {
     if (!deletingDoctor) return;
 
     setIsDeleting(true);
-    const result = await deleteDoctor(deletingDoctor.id!);
+    const result = await softDelete(deletingDoctor.id!);
     setIsDeleting(false);
 
     if (result.success) {
@@ -79,12 +80,12 @@ const DoctorsTable = ({ doctors, specialities }: DoctorsTableProps) => {
         }}
       />
 
-      {/* View Doctor Detail Dialog
+      {/* View Doctor Detail Dialog */}
       <DoctorViewDetailDialog
         open={!!viewingDoctor}
         onClose={() => setViewingDoctor(null)}
         doctor={viewingDoctor}
-      /> */}
+      />
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
