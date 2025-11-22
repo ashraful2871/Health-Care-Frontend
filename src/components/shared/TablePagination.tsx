@@ -1,3 +1,4 @@
+"use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useTransition } from "react";
 import { Button } from "../ui/button";
