@@ -1,6 +1,6 @@
 "use client";
 import ManagementTable from "@/components/shared/ManagementTable";
-import { softDelete } from "@/service/admin/doctorManagement";
+import { deleteDoctor, softDelete } from "@/service/admin/doctorManagement";
 import { IDoctor } from "@/types/doctor.interface";
 import { ISpecialty } from "@/types/specialities.interface.ts";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { doctorsColumns } from "./DoctorsColumns";
 import DoctorFormDialog from "./DoctorFormDialog";
+import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationDialog";
 
 interface DoctorsTableProps {
   doctors: IDoctor[];
@@ -44,7 +45,7 @@ const DoctorsTable = ({ doctors, specialities }: DoctorsTableProps) => {
     if (!deletingDoctor) return;
 
     setIsDeleting(true);
-    const result = await softDelete(deletingDoctor.id!);
+    const result = await deleteDoctor(deletingDoctor.id!);
     setIsDeleting(false);
 
     if (result.success) {
@@ -60,8 +61,8 @@ const DoctorsTable = ({ doctors, specialities }: DoctorsTableProps) => {
       <ManagementTable
         data={doctors}
         columns={doctorsColumns}
-        onView={() => {}}
-        onEdit={() => {}}
+        onView={handleView}
+        onEdit={handleEdit}
         onDelete={handleDelete}
         getRowKey={(doctor) => doctor.id!}
         emptyMessage="No doctors found"
@@ -76,6 +77,23 @@ const DoctorsTable = ({ doctors, specialities }: DoctorsTableProps) => {
           setEditingDoctor(null);
           handleRefresh();
         }}
+      />
+
+      {/* View Doctor Detail Dialog
+      <DoctorViewDetailDialog
+        open={!!viewingDoctor}
+        onClose={() => setViewingDoctor(null)}
+        doctor={viewingDoctor}
+      /> */}
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={!!deletingDoctor}
+        onOpenChange={(open) => !open && setDeletingDoctor(null)}
+        onConfirm={confirmDelete}
+        title="Delete Doctor"
+        description={`Are you sure you want to delete ${deletingDoctor?.name}? This action cannot be undone.`}
+        isDeleting={isDeleting}
       />
     </>
   );

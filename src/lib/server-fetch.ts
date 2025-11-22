@@ -8,7 +8,7 @@ const serverFetchHelper = async (
   options: RequestInit
 ): Promise<Response> => {
   const { headers, ...restOptions } = options;
-  const accessToken = getCookie("accessToken");
+  const accessToken = await getCookie("accessToken");
   // console.log({ accessToken });
 
   const response = await fetch(`${BACKEND_API_URL}${endPoint}`, {
@@ -16,10 +16,10 @@ const serverFetchHelper = async (
       ...headers,
       // ...(accessToken ? { "Authorization": `Bearer ${accessToken}` } : {}),
       // ...(accessToken ? { "Authorization": accessToken } : {}),
-      cookie: accessToken ? `accessToken=${accessToken}` : "",
+      Cookie: accessToken ? `accessToken=${accessToken}` : "",
     },
     ...restOptions,
-    // credentials: "include", // Include cookies in the request
+    credentials: "include", // Include cookies in the request
   });
   return response;
 };

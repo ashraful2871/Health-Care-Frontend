@@ -123,8 +123,7 @@ const DoctorFormDialog = ({
                 id="specialities"
                 name="specialities"
                 placeholder="Select a speciality"
-                // defaultValue={isEdit ? doctor?.doctorSpecialties?.[0]?.specialties?.title : ""}
-                defaultValue={selectedSpeciality}
+                value={selectedSpeciality}
                 type="hidden"
               />
               <Select

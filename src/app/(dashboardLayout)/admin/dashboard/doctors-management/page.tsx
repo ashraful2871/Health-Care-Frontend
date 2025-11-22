@@ -4,14 +4,21 @@ import RefreshButton from "@/components/shared/RefreshButton";
 import SearchFilter from "@/components/shared/SearchFilter";
 import SelectFilter from "@/components/shared/SelectFilter";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
+import { queryStringFormatter } from "@/lib/formatters";
 import { getDoctors } from "@/service/admin/doctorManagement";
 import { getSpeciality } from "@/service/admin/specialitiesManagement";
 import { ISpecialty } from "@/types/specialities.interface.ts";
 import { Suspense } from "react";
 
-const AdminDoctorsManagementPage = async () => {
+const AdminDoctorsManagementPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const searchParamsObj = await searchParams;
+  const queryString = queryStringFormatter(searchParamsObj);
   const specialitiesResult = await getSpeciality();
-  const doctorsResult = await getDoctors();
+  const doctorsResult = await getDoctors(queryString);
   return (
     <div className="space-y-6">
       <DoctorsManagementHeader specialities={specialitiesResult.data} />

@@ -7,7 +7,7 @@ import {
 } from "@/zod/doctor.validation";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export async function createDoctor(prevState: any, formData: FormData) {
+export async function createDoctor(_prevState: any, formData: FormData) {
   try {
     const payload: IDoctor = {
       name: formData.get("name") as string,
@@ -54,7 +54,7 @@ export async function createDoctor(prevState: any, formData: FormData) {
     newFormData.append("data", JSON.stringify(newPayload));
     if (formData.get("file")) {
       newFormData.append("file", formData.get("file") as Blob);
-      const response = await serverFetch.post("/users/create-doctor", {
+      const response = await serverFetch.post("/user/create-doctor", {
         body: newFormData,
       });
       const result = await response.json();
@@ -76,7 +76,7 @@ export async function createDoctor(prevState: any, formData: FormData) {
 export async function getDoctors(queryString?: string) {
   try {
     const response = await serverFetch.get(
-      `/doctors${queryString ? `?${queryString}` : ""}`
+      `/doctor${queryString ? `?${queryString}` : ""}`
     );
     const result = await response.json();
     return result;
@@ -154,7 +154,7 @@ export async function updateDoctor(
 
 export async function deleteDoctor(id: string) {
   try {
-    const response = await serverFetch.delete(`/doctors/${id}`);
+    const response = await serverFetch.delete(`/doctor/${id}`);
     const result = await response.json();
     return result;
   } catch (error: any) {
@@ -171,7 +171,7 @@ export async function deleteDoctor(id: string) {
 
 export async function softDelete(id: string) {
   try {
-    const response = await serverFetch.delete(`/doctors/soft/${id}`);
+    const response = await serverFetch.delete(`/doctor/soft/${id}`);
     const result = await response.json();
     return result;
   } catch (error: any) {
