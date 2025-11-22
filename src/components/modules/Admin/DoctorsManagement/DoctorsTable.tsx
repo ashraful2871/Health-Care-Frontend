@@ -1,0 +1,84 @@
+"use client";
+import ManagementTable from "@/components/shared/ManagementTable";
+import { softDelete } from "@/service/admin/doctorManagement";
+import { IDoctor } from "@/types/doctor.interface";
+import { ISpecialty } from "@/types/specialities.interface.ts";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { doctorsColumns } from "./DoctorsColumns";
+import DoctorFormDialog from "./DoctorFormDialog";
+
+interface DoctorsTableProps {
+  doctors: IDoctor[];
+  specialities: ISpecialty[];
+}
+
+const DoctorsTable = ({ doctors, specialities }: DoctorsTableProps) => {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+  const [deletingDoctor, setDeletingDoctor] = useState<IDoctor | null>(null);
+  const [viewingDoctor, setViewingDoctor] = useState<IDoctor | null>(null);
+  const [editingDoctor, setEditingDoctor] = useState<IDoctor | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleRefresh = () => {
+    startTransition(() => {
+      router.refresh();
+    });
+  };
+
+  const handleView = (doctor: IDoctor) => {
+    setViewingDoctor(doctor);
+  };
+
+  const handleEdit = (doctor: IDoctor) => {
+    setEditingDoctor(doctor);
+  };
+
+  const handleDelete = (doctor: IDoctor) => {
+    setDeletingDoctor(doctor);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingDoctor) return;
+
+    setIsDeleting(true);
+    const result = await softDelete(deletingDoctor.id!);
+    setIsDeleting(false);
+
+    if (result.success) {
+      toast.success(result.message || "Doctor deleted successfully");
+      setDeletingDoctor(null);
+      handleRefresh();
+    } else {
+      toast.error(result.message || "Failed to delete doctor");
+    }
+  };
+  return (
+    <>
+      <ManagementTable
+        data={doctors}
+        columns={doctorsColumns}
+        onView={() => {}}
+        onEdit={() => {}}
+        onDelete={handleDelete}
+        getRowKey={(doctor) => doctor.id!}
+        emptyMessage="No doctors found"
+      />
+      {/* Edit Doctor Form Dialog */}
+      <DoctorFormDialog
+        open={!!editingDoctor}
+        onClose={() => setEditingDoctor(null)}
+        doctor={editingDoctor!}
+        specialities={specialities}
+        onSuccess={() => {
+          setEditingDoctor(null);
+          handleRefresh();
+        }}
+      />
+    </>
+  );
+};
+
+export default DoctorsTable;
