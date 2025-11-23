@@ -23,7 +23,6 @@ export const doctorsColumns: Column<IDoctor>[] = [
   {
     header: "Specialties",
     accessor: (doctor) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const specialities: any = doctor.doctorSpecialties;
       if (!specialities || specialities.length === 0) {
         return <span className="text-xs text-gray-500">No specialties</span>;
