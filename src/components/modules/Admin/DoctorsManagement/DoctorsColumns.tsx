@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { DateCell } from "@/components/shared/Cell/DateCell";
@@ -14,28 +15,35 @@ export const doctorsColumns: Column<IDoctor>[] = [
       <UserInfoCell
         name={doctor.name}
         email={doctor.email}
-        photo={doctor.profilePhoto}
+        photo={doctor?.profilePhoto as string}
       />
     ),
   },
   {
     header: "Specialties",
-    accessor: (doctor) => (
-      <div className="flex flex-wrap gap-1">
-        {doctor.doctorSpecialties && doctor.doctorSpecialties.length > 0 ? (
-          doctor.doctorSpecialties.map((specialty, index) => (
-            <span
-              key={specialty.specialties?.id || index}
-              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-            >
-              {specialty.specialties?.title || "N/A"}
-            </span>
-          ))
-        ) : (
-          <span className="text-xs text-gray-500">No specialties</span>
-        )}
-      </div>
-    ),
+    accessor: (doctor) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const specialities: any = doctor.doctorSpecialties;
+      if (!specialities || specialities.length === 0) {
+        return <span className="text-xs text-gray-500">No specialties</span>;
+      }
+      return (
+        <div className="flex flex-wrap gap-1">
+          {specialities.map((items: any, idx: any) => {
+            const specialtyTitle = items?.specialties?.title || "N/A";
+            const specialtyId = items?.specialties?.id || idx;
+            return (
+              <span
+                key={specialtyId}
+                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+              >
+                {specialtyTitle}
+              </span>
+            );
+          })}
+        </div>
+      );
+    },
   },
   {
     header: "Contact",

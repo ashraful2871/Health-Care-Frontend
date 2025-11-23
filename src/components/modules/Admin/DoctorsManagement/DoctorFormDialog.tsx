@@ -16,11 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSpecialtySelection } from "@/hooks/specialtyHooks/useSpecialtySelection";
 import { createDoctor, updateDoctor } from "@/service/admin/doctorManagement";
 import { IDoctor } from "@/types/doctor.interface";
 import { ISpecialty } from "@/types/specialities.interface.ts";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
+import SpecialtyMultiSelect from "./SpecialtyMultiSelect";
 
 interface IDoctorFormDialogProps {
   open: boolean;
@@ -46,6 +48,10 @@ const DoctorFormDialog = ({
     isEdit ? updateDoctor.bind(null, doctor.id!) : createDoctor,
     null
   );
+
+  const getSpecialtyTitle = (id: string): string => {
+    return specialities?.find((s) => s.id === id)?.title || "";
+  };
   useEffect(() => {
     if (state?.success) {
       toast.success(state.message);
@@ -56,6 +62,11 @@ const DoctorFormDialog = ({
     }
   }, [state, onClose, onSuccess]);
 
+  const specialitySelection = useSpecialtySelection({
+    doctor,
+    isEdit,
+    open,
+  });
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] flex flex-col p-0">
@@ -71,7 +82,9 @@ const DoctorFormDialog = ({
                 id="name"
                 name="name"
                 placeholder="Dr. John Doe"
-                defaultValue={isEdit ? doctor?.name : undefined}
+                defaultValue={
+                  state?.formData?.name || (isEdit ? doctor?.name : "")
+                }
               />
               <InputFieldError state={state} field="name" />
             </Field>
@@ -83,7 +96,10 @@ const DoctorFormDialog = ({
                 name="email"
                 type="email"
                 placeholder="doctor@example.com"
-                defaultValue={isEdit ? doctor?.email : undefined}
+                // defaultValue={isEdit ? doctor?.email : undefined}
+                defaultValue={
+                  state?.formData?.email || (isEdit ? doctor?.email : "")
+                }
                 disabled={isEdit}
               />
               <InputFieldError state={state} field="email" />
@@ -97,6 +113,7 @@ const DoctorFormDialog = ({
                     id="password"
                     name="password"
                     type="password"
+                    defaultValue={state?.formData?.password || ""}
                     placeholder="Enter password"
                   />
                   <InputFieldError state={state} field="password" />
@@ -110,6 +127,7 @@ const DoctorFormDialog = ({
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
+                    defaultValue={state?.formData?.confirmPassword || ""}
                     placeholder="Confirm password"
                   />
                   <InputFieldError state={state} field="confirmPassword" />
@@ -117,46 +135,22 @@ const DoctorFormDialog = ({
               </>
             )}
 
-            <Field>
-              <FieldLabel htmlFor="specialities">Speciality</FieldLabel>
-              <Input
-                id="specialities"
-                name="specialities"
-                placeholder="Select a speciality"
-                value={selectedSpeciality}
-                type="hidden"
-              />
-              <Select
-                value={
-                  //   isEdit
-                  //     ? doctor?.doctorSpecialties?.[0]?.specialties?.title || ""
-                  //     : selectedSpeciality
-                  selectedSpeciality
-                }
-                onValueChange={setSelectedSpeciality}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a speciality" />
-                </SelectTrigger>
-                <SelectContent>
-                  {specialities && specialities.length > 0 ? (
-                    specialities.map((speciality) => (
-                      <SelectItem key={speciality.id} value={speciality.title}>
-                        {speciality.title}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="none" disabled>
-                      No specialities available
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-gray-500 mt-1">
-                Select a speciality for the doctor
-              </p>
-              <InputFieldError state={state} field="specialities" />
-            </Field>
+            <SpecialtyMultiSelect
+              selectedSpecialtyIds={specialitySelection.selectedSpecialtyIds}
+              removedSpecialtyIds={specialitySelection.removedSpecialtyIds}
+              currentSpecialtyId={specialitySelection.currentSpecialtyId}
+              availableSpecialties={specialitySelection.getAvailableSpecialties(
+                specialities!
+              )}
+              isEdit={isEdit}
+              onCurrentSpecialtyChange={
+                specialitySelection.setCurrentSpecialtyId
+              }
+              onAddSpecialty={specialitySelection.handleAddSpecialty}
+              onRemoveSpecialty={specialitySelection.handleRemoveSpecialty}
+              getSpecialtyTitle={getSpecialtyTitle}
+              getNewSpecialties={specialitySelection.getNewSpecialties}
+            />
 
             <Field>
               <FieldLabel htmlFor="contactNumber">Contact Number</FieldLabel>
@@ -164,7 +158,10 @@ const DoctorFormDialog = ({
                 id="contactNumber"
                 name="contactNumber"
                 placeholder="+1234567890"
-                defaultValue={doctor?.contactNumber}
+                defaultValue={
+                  state?.formData?.contactNumber ||
+                  (isEdit ? doctor?.contactNumber : "")
+                }
               />
               <InputFieldError state={state} field="contactNumber" />
             </Field>
@@ -175,7 +172,9 @@ const DoctorFormDialog = ({
                 id="address"
                 name="address"
                 placeholder="123 Main St, City, Country"
-                defaultValue={isEdit ? doctor?.address : undefined}
+                defaultValue={
+                  state?.formData?.address || (isEdit ? doctor?.address : "")
+                }
               />
               <InputFieldError state={state} field="address" />
             </Field>
@@ -188,7 +187,10 @@ const DoctorFormDialog = ({
                 id="registrationNumber"
                 name="registrationNumber"
                 placeholder="REG123456"
-                defaultValue={isEdit ? doctor?.registrationNumber : undefined}
+                defaultValue={
+                  state?.formData?.registrationNumber ||
+                  (isEdit ? doctor?.registrationNumber : "")
+                }
               />
               <InputFieldError state={state} field="registrationNumber" />
             </Field>
@@ -202,7 +204,11 @@ const DoctorFormDialog = ({
                 name="experience"
                 type="number"
                 placeholder="5"
-                defaultValue={isEdit ? doctor?.experience : undefined}
+                // defaultValue={isEdit ? doctor?.experience : undefined}
+                defaultValue={
+                  state?.formData?.experience ||
+                  (isEdit ? doctor?.experience : "")
+                }
                 min="0"
               />
               <InputFieldError state={state} field="experience" />
@@ -239,7 +245,10 @@ const DoctorFormDialog = ({
                 name="appointmentFee"
                 type="number"
                 placeholder="100"
-                defaultValue={isEdit ? doctor?.appointmentFee : undefined}
+                defaultValue={
+                  state?.formData?.appointmentFee ||
+                  (isEdit ? doctor?.appointmentFee : "")
+                }
                 min="0"
               />
               <InputFieldError state={state} field="appointmentFee" />
@@ -251,7 +260,10 @@ const DoctorFormDialog = ({
                 id="qualification"
                 name="qualification"
                 placeholder="MBBS, MD"
-                defaultValue={isEdit ? doctor?.qualification : undefined}
+                defaultValue={
+                  state?.formData?.qualification ||
+                  (isEdit ? doctor?.qualification : "")
+                }
               />
               <InputFieldError state={state} field="qualification" />
             </Field>
@@ -264,7 +276,10 @@ const DoctorFormDialog = ({
                 id="currentWorkingPlace"
                 name="currentWorkingPlace"
                 placeholder="City Hospital"
-                defaultValue={isEdit ? doctor?.currentWorkingPlace : undefined}
+                defaultValue={
+                  state?.formData?.currentWorkingPlace ||
+                  (isEdit ? doctor?.currentWorkingPlace : "")
+                }
               />
               <InputFieldError state={state} field="currentWorkingPlace" />
             </Field>
@@ -275,7 +290,10 @@ const DoctorFormDialog = ({
                 id="designation"
                 name="designation"
                 placeholder="Senior Consultant"
-                defaultValue={isEdit ? doctor?.designation : undefined}
+                defaultValue={
+                  state?.formData?.designation ||
+                  (isEdit ? doctor?.designation : "")
+                }
               />
               <InputFieldError state={state} field="designation" />
             </Field>
@@ -287,7 +305,7 @@ const DoctorFormDialog = ({
                 <p className="text-xs text-gray-500 mt-1">
                   Upload a profile photo for the doctor
                 </p>
-                <InputFieldError state={state} field="file" />
+                <InputFieldError state={state} field="profilePhoto" />
               </Field>
             )}
           </div>
