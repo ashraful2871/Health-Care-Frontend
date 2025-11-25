@@ -8,6 +8,7 @@ import {
   UserRole,
 } from "./lib/auth-utils";
 import { deleteCookie, getCookie } from "./service/auth/cookiesHandler";
+import { getUserInfo } from "./service/auth/getUserInfo";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
@@ -54,6 +55,26 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  if (accessToken) {
+    const userInfo = await getUserInfo();
+    if (userInfo.needPasswordChange) {
+      if (pathname !== "/reset-password") {
+        const resetPasswordUrl = new URL("/reset-password", request.url);
+        resetPasswordUrl.searchParams.set("redirect", pathname);
+        return NextResponse.redirect(resetPasswordUrl);
+      }
+    }
+    if (
+      userInfo &&
+      !userInfo.needPasswordChange &&
+      pathname === "/reset-password"
+    ) {
+      return NextResponse.redirect(
+        new URL(getDefaultDashboardRoute(userRole as UserRole), request.url)
+      );
+    }
+  }
+
   // user is trying to access common protected route
   if (routeOwner === "COMMON") {
     return NextResponse.next();
@@ -70,8 +91,6 @@ export async function proxy(request: NextRequest) {
       );
     }
   }
-
-  console.log(userRole);
 
   return NextResponse.next();
 }
