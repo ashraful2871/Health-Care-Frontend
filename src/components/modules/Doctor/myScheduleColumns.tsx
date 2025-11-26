@@ -1,3 +1,4 @@
+"use client";
 import { Column } from "@/components/shared/ManagementTable";
 import { Badge } from "@/components/ui/badge";
 import { IDoctorSchedule } from "@/types/schedule.interface";

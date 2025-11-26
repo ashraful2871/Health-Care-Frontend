@@ -1,3 +1,4 @@
+"use client";
 import ClearFiltersButton from "@/components/shared/ClearFiltersButton";
 import RefreshButton from "@/components/shared/RefreshButton";
 import SelectFilter from "@/components/shared/SelectFilter";

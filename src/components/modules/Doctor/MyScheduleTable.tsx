@@ -1,3 +1,5 @@
+"use client";
+
 import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationDialog";
 import ManagementTable from "@/components/shared/ManagementTable";
 import { deleteDoctorOwnSchedule } from "@/service/doctor/doctorScedule.services";
