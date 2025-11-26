@@ -9,10 +9,27 @@ import {
 } from "./lib/auth-utils";
 import { deleteCookie, getCookie } from "./service/auth/cookiesHandler";
 import { getUserInfo } from "./service/auth/getUserInfo";
+import { getNewAccessToken } from "./service/auth/auth.service";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  const hasTokenRefreshedParam =
+    request.nextUrl.searchParams.get("tokenRefreshed");
+
+  if (hasTokenRefreshedParam) {
+    const url = request.nextUrl.clone();
+    url.searchParams.delete("tokenRefreshed");
+    return NextResponse.redirect(url);
+  }
+  const tokenRefreshedResult = await getNewAccessToken();
+
+  if (tokenRefreshedResult?.tokenRefreshed) {
+    const url = request.nextUrl.clone();
+    url.searchParams.set("tokenRefreshed", "true");
+    return NextResponse.redirect(url);
+  }
   // const accessToken = request.cookies.get("accessToken")?.value || null;
   const accessToken = (await getCookie("accessToken")) || null;
 

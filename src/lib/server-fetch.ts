@@ -13,10 +13,10 @@ const serverFetchHelper = async (
 
   const response = await fetch(`${BACKEND_API_URL}${endPoint}`, {
     headers: {
+      Cookie: accessToken ? `accessToken=${accessToken}` : "",
       ...headers,
       // ...(accessToken ? { "Authorization": `Bearer ${accessToken}` } : {}),
       // ...(accessToken ? { "Authorization": accessToken } : {}),
-      Cookie: accessToken ? `accessToken=${accessToken}` : "",
     },
     ...restOptions,
     credentials: "include", // Include cookies in the request
