@@ -13,6 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 interface SelectFilterProps {
   paramName: string;
   placeholder?: string;
+  defaultValue?: string;
   options: { label: string; value: string }[];
 }
 
@@ -20,6 +21,7 @@ const SelectFilter = ({
   options,
   paramName,
   placeholder,
+  defaultValue = "All",
 }: SelectFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -29,7 +31,7 @@ const SelectFilter = ({
   const handleChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (value === "All") {
+    if (value === defaultValue) {
       params.delete(paramName || "");
     } else if (value) {
       params.set(paramName, value);
@@ -51,7 +53,7 @@ const SelectFilter = ({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="All">All</SelectItem>
+        <SelectItem value={defaultValue}>{defaultValue}</SelectItem>
         {options.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
