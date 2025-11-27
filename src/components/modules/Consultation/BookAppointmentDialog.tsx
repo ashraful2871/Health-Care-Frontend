@@ -26,7 +26,7 @@ const BookAppointmentDialog = ({
   isOpen,
   onClose,
 }: BookAppointmentDialogProps) => {
-  const doctorSchedules = doctor.doctorSchedules || [];
+  const doctorSchedules = doctor.doctorSchedule || [];
   const [selectedSchedule, setSelectedSchedule] =
     useState<IDoctorSchedule | null>(null);
 

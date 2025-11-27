@@ -30,5 +30,5 @@ export interface IDoctor {
     };
   }>;
 
-  doctorSchedules?: IDoctorSchedule[];
+  doctorSchedule?: IDoctorSchedule[];
 }
