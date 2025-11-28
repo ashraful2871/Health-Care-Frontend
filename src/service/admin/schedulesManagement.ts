@@ -10,9 +10,7 @@ export async function createSchedule(_prevState: any, formData: FormData) {
     startTime: formData.get("startTime") as string,
     endTime: formData.get("endTime") as string,
   };
-
   const validation = zodValidator(validationPayload, createScheduleZodSchema);
-
   if (!validation.success && validation.errors) {
     return {
       success: false,
@@ -29,13 +27,12 @@ export async function createSchedule(_prevState: any, formData: FormData) {
       formData: validationPayload,
     };
   }
-
   try {
     const response = await serverFetch.post("/schedule", {
       headers: {
         "content-type": "application/json",
-        body: JSON.stringify(validation.data),
       },
+      body: JSON.stringify(validation.data),
     });
 
     const result = await response.json();

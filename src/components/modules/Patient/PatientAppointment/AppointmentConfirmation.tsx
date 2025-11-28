@@ -60,34 +60,33 @@ const AppointmentConfirmation = ({
       setIsBooking(false);
       console.error(error);
     }
-
-    if (bookingSuccess) {
-      return (
-        <div className="max-w-2xl mx-auto">
-          <Card className="border-green-200 bg-green-50">
-            <CardContent className="pt-6">
-              <div className="text-center space-y-4">
-                <div className="flex justify-center">
-                  <CheckCircle2 className="h-16 w-16 text-green-600" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-green-900">
-                    Appointment Confirmed!
-                  </h2>
-                  <p className="text-green-700 mt-2">
-                    Your appointment has been successfully booked
-                  </p>
-                </div>
-                <p className="text-sm text-green-600">
-                  Redirecting to your appointments...
+  };
+  if (bookingSuccess) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <div className="flex justify-center">
+                <CheckCircle2 className="h-16 w-16 text-green-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-green-900">
+                  Appointment Confirmed!
+                </h2>
+                <p className="text-green-700 mt-2">
+                  Your appointment has been successfully booked
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
-  };
+              <p className="text-sm text-green-600">
+                Redirecting to your appointments...
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
