@@ -7,13 +7,13 @@ export async function getDoctorOwnSchedules(queryString?: string) {
   try {
     // const response = await serverFetch.get(`/doctor-schedule/my-schedule${queryString ? `?${queryString}` : ""}`);
     const response = await serverFetch.get(
-      `/doctor-schedule${queryString ? `?${queryString}` : ""}`
+      `/doctor-schedule/my-schedule${queryString ? `?${queryString}` : ""}`
     );
     const result = await response.json();
     return {
       success: result.success,
-      data: Array.isArray(result.data) ? result.data : [],
-      meta: result.meta,
+      data: result.data.data,
+      meta: result.data.meta,
     };
   } catch (error: any) {
     console.log(error);
