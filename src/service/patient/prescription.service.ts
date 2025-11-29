@@ -10,8 +10,8 @@ export async function createPrescription(data: IPrescriptionFormData) {
         "Content-Type": "application/json",
       },
     });
-
     const result = await response.json();
+    console.log(result);
     return result;
   } catch (error: any) {
     console.error("Error creating prescription:", error);
