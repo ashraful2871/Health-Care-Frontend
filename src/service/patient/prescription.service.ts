@@ -11,7 +11,7 @@ export async function createPrescription(data: IPrescriptionFormData) {
       },
     });
     const result = await response.json();
-    console.log(result);
+
     return result;
   } catch (error: any) {
     console.error("Error creating prescription:", error);

@@ -30,7 +30,6 @@ const loginInvalidZodSchema = z.object({
 export const loginUser = async (_currentState: any, formData: any) => {
   try {
     const redirectTo = formData.get("redirect");
-    console.log("redirect from login form", redirectTo);
     let accessTokenObject: null | any = null;
     let refreshTokenObject: null | any = null;
 
@@ -67,10 +66,8 @@ export const loginUser = async (_currentState: any, formData: any) => {
 
     if (setCookieHeaders && setCookieHeaders.length > 0) {
       setCookieHeaders.forEach((cookie: string) => {
-        console.log(cookie, "cookie");
-
         const parsedCookie = parse(cookie);
-        console.log(parsedCookie, "parsedCookie");
+
         if (parsedCookie["accessToken"]) {
           accessTokenObject = parsedCookie;
         }

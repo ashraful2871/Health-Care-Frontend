@@ -89,7 +89,6 @@ export async function resetPassword(_prevState: any, formData: FormData) {
     const userRole: UserRole = verifiedToken.role;
 
     const user = await getUserInfo();
-    console.log({ id: user?.id, newPassword: validationPayload.newPassword });
     const response = await serverFetch.post("/auth/reset-password", {
       body: JSON.stringify({
         id: user?.id,

@@ -20,8 +20,6 @@ const Login = ({ redirect }: { redirect?: string }) => {
   //   }
   // };
 
-  console.log(state, "state");
-
   useEffect(() => {
     if (state && !state.success && "message" in state && state.message) {
       toast.error(state.message);

@@ -52,7 +52,6 @@ export async function createAdmin(_parseState: any, formData: FormData) {
 
   newFormData.append("data", JSON.stringify(backendPayload));
   newFormData.append("file", formData.get("file") as Blob);
-  console.log(newFormData);
   try {
     const response = await serverFetch.post("/user/create-admin", {
       body: newFormData,

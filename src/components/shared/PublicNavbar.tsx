@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { Button } from "../ui/button";
 import {
@@ -17,7 +16,6 @@ import LogoutButton from "./LogoutButton";
 const { user } = await checkAuth();
 const PublicNavbar = async () => {
   const { role } = user || { role: "guest" };
-  console.log(user);
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Consultation", href: "/consultation" },
